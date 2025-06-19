@@ -11,7 +11,7 @@ setup(
     description="Simple framework for building Telegram agents with Django",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/botnetics-agent",
+    url="https://github.com/Behokus/botnetics-agent",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
