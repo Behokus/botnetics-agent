@@ -7,7 +7,7 @@ setup(
     name="botnetics-agent",
     version="0.1.0",
     author="Behokus",
-    author_email="behokus@pm.me",
+    author_email="behokus@proton.me",
     description="Simple framework for building Telegram agents with Django",
     long_description=long_description,
     long_description_content_type="text/markdown",
