@@ -27,6 +27,7 @@ setup(
     install_requires=[
         "Django>=4.0,<5.0",
         "django-cors-headers>=4.0.0",
+        "requests>=2.28.0",
     ],
     entry_points={
         "console_scripts": [
