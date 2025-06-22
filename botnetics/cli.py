@@ -8,7 +8,8 @@ import os
 
 app = BotneticsApp(
     api_key=os.getenv("API_KEY", "test-key"),
-    gateway_url=os.getenv("GATEWAY_URL", "http://localhost:8000")
+    gateway_url=os.getenv("GATEWAY_URL", "http://localhost:8000"),
+    allowed_hosts=['localhost', '127.0.0.1', '{project_name}.fly.dev']
 )
 
 @app.on_message
@@ -71,6 +72,8 @@ def main():
     project_path.mkdir()
     
     for filename, content in TEMPLATES.items():
+        if filename == 'agent.py':
+            content = content.replace('{project_name}', project_name)
         (project_path / filename).write_text(content)
     
     print(f"[SUCCESS] Created {project_name}")
