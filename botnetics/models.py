@@ -21,7 +21,7 @@ class Message:
             self.attachments = []
 
 @dataclass
-class Response:
+class Callback:
     text: str
     attachments: List[Attachment] = None
     

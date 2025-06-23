@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="botnetics-agent",
-    version="0.1.6",
+    version="0.1.7",
     author="Behokus",
     author_email="behokus@proton.me",
     description="Simple framework for building Telegram agents with Django",

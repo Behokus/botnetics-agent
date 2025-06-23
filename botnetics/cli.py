@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 TEMPLATES = {
-    'agent.py': '''from botnetics import BotneticsApp, Message, Response, Attachment
+    'agent.py': '''from botnetics import BotneticsApp, Message, Callback, Attachment
 import os
 
 app = BotneticsApp(
@@ -22,20 +22,53 @@ def handle_message(message: Message):
             print(f"  - {attachment.filename} ({attachment.type})")
             print(f"    URL: {attachment.url}")
     
-    # Return a response (can include attachments)
-    return Response(
-        text=f"Echo: {message.text}",
-        # Example: Add attachments to response
-        # attachments=[
-        #     Attachment(
-        #         type="image",
-        #         filename="response.jpg", 
-        #         url="https://example.com/response.jpg",
-        #         mime_type="image/jpeg",
-        #         size_bytes=12345
-        #     )
-        # ]
+    # Process your message here
+    response_text = f"Echo: {message.text}"
+    
+    # Handle attachments - choose one of these options:
+    
+    # Option 1: Echo back received attachments
+    response_attachments = message.attachments
+    
+    # Option 2: No attachments in response
+    # response_attachments = []
+    
+    # Option 3: Create new attachments
+    # response_attachments = [
+    #     Attachment(
+    #         type="image",
+    #         filename="generated-response.jpg", 
+    #         url="https://your-storage.com/generated-response.jpg",
+    #         mime_type="image/jpeg",
+    #         size_bytes=12345
+    #     )
+    # ]
+    
+    # Option 4: Process received attachments and return modified ones
+    # response_attachments = []
+    # for attachment in message.attachments:
+    #     # Process the attachment (download, modify, re-upload, etc.)
+    #     processed_url = process_attachment(attachment.url)
+    #     response_attachments.append(Attachment(
+    #         type=attachment.type,
+    #         filename=f"processed-{attachment.filename}",
+    #         url=processed_url,
+    #         mime_type=attachment.mime_type,
+    #         size_bytes=attachment.size_bytes
+    #     ))
+    
+    return Callback(
+        text=response_text,
+        attachments=response_attachments
     )
+
+# def process_attachment(url):
+#     """Example function to process an attachment"""
+#     # Download the file from the URL
+#     # Process it (resize, filter, etc.)
+#     # Upload to your storage
+#     # Return the new URL
+#     return "https://your-storage.com/processed-file.jpg"
 
 if __name__ == "__main__":
     print("[BOT] Botnetics agent starting...")
