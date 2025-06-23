@@ -10,10 +10,9 @@ def get_current_app():
     return _current_app
 
 class BotneticsApp:
-    def __init__(self, api_key, gateway_url=None, allowed_hosts=None):
+    def __init__(self, api_key, gateway_url=None):
         self.api_key = api_key
         self.gateway_url = gateway_url
-        self.allowed_hosts = allowed_hosts
         self.message_handlers = []
         self._configure_django()
         
@@ -23,9 +22,10 @@ class BotneticsApp:
     def _configure_django(self):
         if not settings.configured:
             settings.configure(
-                DEBUG=False,
-                ALLOWED_HOSTS=self.allowed_hosts,
-                SECRET_KEY='botnetics-secret-key-change-in-production',
+                ALLOWED_HOSTS=['localhost', '127.0.0.1', '.fly.dev'],
+                CSRF_TRUSTED_ORIGINS=['https://*.fly.dev'],
+                DEBUG=os.getenv('DEBUG', 'False').lower() == 'true',
+                SECRET_KEY=os.getenv('SECRET_KEY', 'a-default-secret-key-for-development'),
                 ROOT_URLCONF='botnetics.urls',
                 INSTALLED_APPS=[
                     'django.contrib.contenttypes',

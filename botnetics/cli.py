@@ -3,22 +3,38 @@ import sys
 from pathlib import Path
 
 TEMPLATES = {
-    'agent.py': '''from botnetics import BotneticsApp, Message
+    'agent.py': '''from botnetics import BotneticsApp, Message, Response, Attachment
 import os
 
 app = BotneticsApp(
     api_key=os.getenv("API_KEY", "test-key"),
-    gateway_url=os.getenv("GATEWAY_URL", "http://localhost:8000"),
-    allowed_hosts=['localhost', '127.0.0.1', '{project_name}.fly.dev']
+    gateway_url=os.getenv("GATEWAY_URL", "http://localhost:8000")
 )
 
 @app.on_message
 def handle_message(message: Message):
     print(f"Received: {message.text} from {message.user_id}")
-    return Message(
+    
+    # Check if message has attachments
+    if message.attachments:
+        print(f"Message has {len(message.attachments)} attachments:")
+        for attachment in message.attachments:
+            print(f"  - {attachment.filename} ({attachment.type})")
+            print(f"    URL: {attachment.url}")
+    
+    # Return a response (can include attachments)
+    return Response(
         text=f"Echo: {message.text}",
-        chat_id=message.chat_id,
-        user_id=message.user_id
+        # Example: Add attachments to response
+        # attachments=[
+        #     Attachment(
+        #         type="image",
+        #         filename="response.jpg", 
+        #         url="https://example.com/response.jpg",
+        #         mime_type="image/jpeg",
+        #         size_bytes=12345
+        #     )
+        # ]
     )
 
 if __name__ == "__main__":
@@ -54,6 +70,23 @@ A simple agent built with Botnetics Agent Framework.
 docker build -t my-agent .
 docker run -p 8000:8000 my-agent
 ```
+''',
+    'fly.toml': '''app = "{project_name}"
+primary_region = "fra"
+
+[build]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
 '''
 }
 
@@ -72,8 +105,7 @@ def main():
     project_path.mkdir()
     
     for filename, content in TEMPLATES.items():
-        if filename == 'agent.py':
-            content = content.replace('{project_name}', project_name)
+        content = content.replace('{project_name}', project_name)
         (project_path / filename).write_text(content)
     
     print(f"[SUCCESS] Created {project_name}")
